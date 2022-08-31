@@ -81,7 +81,7 @@ public class AuthServiceImpl implements AuthService {
         String password = userInfo.getPassword();
         User user = UserConverter.INSTANCE.infoToUser(userInfo);
         user.setPassword(encoder.encode(password));
-        user.setLastPasswordResetDate(new Date());
+//        user.setLastPasswordResetDate(new Date());
         try {
             int insert = userMapper.insert(user);
             if (insert > 0) {
@@ -115,7 +115,8 @@ public class AuthServiceImpl implements AuthService {
                     = new UsernamePasswordAuthenticationToken(username, password);
             Authentication authenticate = authenticationManager.authenticate(authenticationToken);
            // SecurityContextHolder.getContext().setAuthentication(authenticate);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = (UserDetails) authenticate.getPrincipal();
+//            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             JwtUser jwtUser = (JwtUser) userDetails;
             Long id = jwtUser.getId();
             String token = jwtTokenUtil.generateToken(userDetails);
